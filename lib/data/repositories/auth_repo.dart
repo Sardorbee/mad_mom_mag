@@ -1,5 +1,3 @@
-import 'package:image_picker/image_picker.dart';
-
 import 'package:mad_mom_mag/data/local/shared_prefs.dart';
 import 'package:mad_mom_mag/data/models/universal_data.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';

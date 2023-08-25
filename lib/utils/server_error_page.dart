@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class LoadingPage extends StatelessWidget {
-  const LoadingPage({super.key});
+class ErrorServerPage extends StatelessWidget {
+  const ErrorServerPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.transparent,
       body: Center(
-        child: CircularProgressIndicator(),
+        child: LottieBuilder.asset("assets/lottie/error_server.json"),
       ),
     );
   }

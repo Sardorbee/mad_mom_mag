@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/presentation/auth/sign_in/sign_in_page.dart';
-import 'package:mad_mom_mag/presentation/auth/sign_up/confirm_code.dart';
-import 'package:mad_mom_mag/presentation/auth/sign_up/auth_states.dart';
-import 'package:mad_mom_mag/presentation/auth/sign_up/send_code_to_gmail.dart';
+import 'package:mad_mom_mag/presentation/auth/auth_states.dart';
 import 'package:mad_mom_mag/presentation/auth/sign_up/sign_up_page.dart';
 import 'package:mad_mom_mag/presentation/splash/splash.dart';
 import 'package:mad_mom_mag/presentation/tab_bar.dart';
@@ -17,6 +13,7 @@ class RouteNames {
   static const String sendCodeToGmail = "/sendCodeToGmail";
   static const String confirmCode = "/confirmCode";
   static const String authStates = "/authStates";
+  static const String articleDetails = "/articleDetails";
 }
 
 class AppRoutes {
@@ -31,17 +28,16 @@ class AppRoutes {
 
       case RouteNames.signUpPage:
         return MaterialPageRoute(builder: (context) => const SignUpPage());
+
       case RouteNames.tabBox:
         return MaterialPageRoute(builder: (context) => const TabBarScreen());
 
-      case RouteNames.sendCodeToGmail:
-        return MaterialPageRoute(builder: (context) => const SendCodeToGmail());
-      // case RouteNames.confirmCode:
-      //   return MaterialPageRoute(
-      //     builder: (context) => ConfirmGmailCode(
-      //         userModel: settings.arguments as UserModel,
-      //         xFile: settings.arguments as XFile),
-      //   );
+      // case RouteNames.sendCodeToGmail:
+      //   return MaterialPageRoute(builder: (context) => const SendCodeToGmail());
+
+      // case RouteNames.articleDetails:
+      //   return MaterialPageRoute(builder: (context) =>  ArticleDetails());
+
       case RouteNames.authStates:
         return MaterialPageRoute(builder: (context) => const AuthStates());
 

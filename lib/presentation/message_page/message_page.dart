@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-import 'chat_page/chat_page.dart';
+
 
 class MessagePage extends StatelessWidget {
   const MessagePage({super.key, });
@@ -72,70 +72,40 @@ class MessagePage extends StatelessWidget {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.03,
                 ),
-                ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => const ChatPage()),
-                      ),
-                    );
-                  },
-                  leading: CircleAvatar(
-                    maxRadius: MediaQuery.of(context).size.height * 0.05,
-                    // backgroundImage: CachedNetworkImageProvider(imageUrl),
-                  ),
-                  title: Column(
-                    children: [
-                      const Text('Andrey Robertson'),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      const Text('asdf12as1f2sa1f2'),
-                    ],
-                  ),
-                  trailing: const Text('9m ago'),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: CircleAvatar(
-                    maxRadius: MediaQuery.of(context).size.height * 0.05,
-                    // backgroundImage: CachedNetworkImageProvider(imageUrl),
-                  ),
-                  title: Column(
-                    children: [
-                      const Text('Andrey Robertson'),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      const Text('asdf12as1f2sa1f2'),
-                    ],
-                  ),
-                  trailing: const Text('9m ago'),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: CircleAvatar(
-                    maxRadius: MediaQuery.of(context).size.height * 0.05,
-                    // backgroundImage: CachedNetworkImageProvider(imageUrl),
-                  ),
-                  title: Column(
-                    children: [
-                      const Text('Andrey Robertson'),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      const Text('asdf12as1f2sa1f2'),
-                    ],
-                  ),
-                  trailing: const Text('9m ago'),
-                )
+                // // BlocConsumer<UsersApiCubit, UsersApiState>(
+                // //   listener: (context, state) {
+                    
+                // //   },
+                // //   builder: (context, state) {
+                // //     return ListTile(
+                // //   onTap: () {
+                // //     Navigator.push(
+                // //       context,
+                // //       MaterialPageRoute(
+                // //         builder: ((context) => const ChatPage()),
+                // //       ),
+                // //     );
+                // //   },
+                // //   leading: CircleAvatar(
+                // //     maxRadius: MediaQuery.of(context).size.height * 0.05,
+                // //     // backgroundImage: CachedNetworkImageProvider(imageUrl),
+                // //   ),
+                // //   title: Column(
+                // //     children: [
+                // //       const Text('Andrey Robertson'),
+                // //       SizedBox(
+                // //         height: MediaQuery.of(context).size.height * 0.01,
+                // //       ),
+                // //       const Text('asdf12as1f2sa1f2'),
+                // //     ],
+                // //   ),
+                // //   trailing: const Text('9m ago'),
+                // // );
+                //   },
+                // )
+                
+                
+
               ],
             )),
           ),

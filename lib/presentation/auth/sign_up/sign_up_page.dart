@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mad_mom_mag/cubitss/auth_cubit/auth_cubit.dart';
+import 'package:mad_mom_mag/cubitss/auth_cubit/user_data_cubit/userdata_cubit.dart';
+import 'package:mad_mom_mag/data/models/user_model/field_keys.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/presentation/auth/sign_in/sign_in_page.dart';
-import 'package:mad_mom_mag/presentation/auth/sign_up/auth_text_field.dart';
-import 'package:mad_mom_mag/presentation/auth/sign_up/confirm_code.dart';
+import 'package:mad_mom_mag/presentation/auth/sign_up/widgets/auth_text_field.dart';
+import 'package:mad_mom_mag/presentation/auth/confirm_page/confirm_code.dart';
+import 'package:mad_mom_mag/presentation/auth/sign_up/widgets/dilalogs.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -17,18 +20,11 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  ImagePicker picker = ImagePicker();
-  XFile? file;
   bool obscureText = true;
   bool isEmailValid = false;
-  UserModel? userModel;
-  TextEditingController usernameCont = TextEditingController();
   TextEditingController gmailCont = TextEditingController();
-  TextEditingController phoneCont = TextEditingController();
-  TextEditingController passwordCont = TextEditingController();
-  TextEditingController professionCont = TextEditingController();
-  TextEditingController genderCont = TextEditingController();
   File? image;
+  String? popUpButtonValue;
   @override
   void initState() {
     super.initState();
@@ -54,8 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ConfirmGmailCode(userModel: userModel!),
+              builder: (context) => ConfirmGmailCode(),
             ),
           );
         } else if (state is AuthErrorState) {
@@ -110,7 +105,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           height: MediaQuery.of(context).size.height * 0.04,
                         ),
                         AuthTextField(
-                            controller: usernameCont,
+                            onChanged: (value) {
+                              context
+                                  .read<UserDataCubit>()
+                                  .updateCurrentUserField(
+                                      fieldKey: UserFieldKeys.username,
+                                      value: value);
+                            },
                             icon: Icons.person_outline_rounded,
                             label: "Username",
                             type: TextInputType.name),
@@ -118,20 +119,34 @@ class _SignUpPageState extends State<SignUpPage> {
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
                         AuthTextField(
-                            controller: gmailCont,
-                            icon: Icons.email,
-                            label: "Gmail Address",
-                            errorText: gmailCont.text.isNotEmpty
-                                ? isEmailValid
-                                    ? null
-                                    : "Invalid EMail"
-                                : null,
-                            type: TextInputType.emailAddress),
+                          onChanged: (value) {
+                            context
+                                .read<UserDataCubit>()
+                                .updateCurrentUserField(
+                                    fieldKey: UserFieldKeys.email,
+                                    value: value);
+                          },
+                          controller: gmailCont,
+                          icon: Icons.email,
+                          label: "Gmail Address",
+                          errorText: gmailCont.text.isNotEmpty
+                              ? isEmailValid
+                                  ? null
+                                  : "Invalid EMail"
+                              : null,
+                          type: TextInputType.emailAddress,
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
                         AuthTextField(
-                            controller: phoneCont,
+                            onChanged: (value) {
+                              context
+                                  .read<UserDataCubit>()
+                                  .updateCurrentUserField(
+                                      fieldKey: UserFieldKeys.contact,
+                                      value: value);
+                            },
                             icon: Icons.phone,
                             label: "Phone Number",
                             type: TextInputType.phone),
@@ -139,7 +154,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
                         AuthTextField(
-                          controller: passwordCont,
+                          onChanged: (value) {
+                            context
+                                .read<UserDataCubit>()
+                                .updateCurrentUserField(
+                                    fieldKey: UserFieldKeys.password,
+                                    value: value);
+                          },
                           obscure: obscureText,
                           icon: Icons.lock,
                           label: "Password",
@@ -170,19 +191,22 @@ class _SignUpPageState extends State<SignUpPage> {
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           MediaQuery.of(context).size.height *
-                                              0.031),
+                                              0.019),
                                     ),
                                   ),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
-                                    const Color.fromRGBO(37, 43, 51, 1),
+                                    Colors.black.withOpacity(0.0),
                                   ),
                                 ),
                                 onPressed: () {
                                   showBottomSheetDialog();
                                 },
                                 child: const Center(
-                                  child: Text('Upload image'),
+                                  child: Text(
+                                    'Upload image',
+                                    style: TextStyle(color: Colors.black45),
+                                  ),
                                 ),
                               ),
                             ),
@@ -199,18 +223,55 @@ class _SignUpPageState extends State<SignUpPage> {
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
                         AuthTextField(
-                            controller: professionCont,
-                            icon: Icons.work,
-                            label: "Profession",
-                            type: TextInputType.text),
+                          onChanged: (value) {
+                            context
+                                .read<UserDataCubit>()
+                                .updateCurrentUserField(
+                                    fieldKey: UserFieldKeys.profession,
+                                    value: value);
+                          },
+                          icon: Icons.work,
+                          label: "Profession",
+                          type: TextInputType.text,
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
-                        AuthTextField(
-                            controller: genderCont,
-                            icon: Icons.male,
-                            label: "Gender",
-                            type: TextInputType.text),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.height * 0.019),
+                              color: Colors.black12,
+                            ),
+                            width: 100,
+                            child: PopupMenuButton(
+                              color: Colors.white.withOpacity(0.9),
+                              icon: Text(popUpButtonValue == null
+                                  ? "Gender"
+                                  : popUpButtonValue!),
+                              onSelected: (value) {
+                                context
+                                    .read<UserDataCubit>()
+                                    .updateCurrentUserField(
+                                        fieldKey: UserFieldKeys.gender,
+                                        value: value);
+                                setState(() {
+                                  popUpButtonValue = value;
+                                });
+                              },
+                              itemBuilder: (context) {
+                                return [
+                                  const PopupMenuItem(
+                                      value: "Male", child: Text('Male')),
+                                  const PopupMenuItem(
+                                      value: "Female", child: Text('Female'))
+                                ];
+                              },
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
@@ -231,37 +292,24 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                             ),
                             onPressed: () async {
-                              if (file != null &&
-                                  usernameCont.text.isNotEmpty &&
-                                  gmailCont.text.isNotEmpty &&
-                                  phoneCont.text.isNotEmpty &&
-                                  passwordCont.text.isNotEmpty &&
-                                  professionCont.text.isNotEmpty &&
-                                  genderCont.text.isNotEmpty) {
-                                userModel = UserModel(
-                                  password: passwordCont.text,
-                                  username: usernameCont.text,
-                                  email: gmailCont.text,
-                                  contact: phoneCont.text,
-                                  gender: genderCont.text,
-                                  profession: professionCont.text,
-                                  avatar: file!.path,
-                                );
-
+                              if (context.read<UserDataCubit>().canRegister()) {
                                 if (context.mounted) {
                                   await context
                                       .read<AuthCubit>()
                                       .sendCodeToGmail(
-                                          gmailCont.text, passwordCont.text);
-
-                                  if (context.mounted) {}
+                                          gmailCont.text,
+                                          context
+                                              .read<UserDataCubit>()
+                                              .state
+                                              .userModel
+                                              .password);
                                 }
                               } else {
                                 print('something went wrong');
                               }
                             },
                             child: const Center(
-                              child: Text('Sign In'),
+                              child: Text('Register'),
                             ),
                           ),
                         ),
@@ -349,6 +397,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<void> _getFromCamera() async {
+    ImagePicker picker = ImagePicker();
     XFile? xFile = await picker.pickImage(
       source: ImageSource.camera,
       maxHeight: 512,
@@ -356,24 +405,26 @@ class _SignUpPageState extends State<SignUpPage> {
     );
 
     if (xFile != null) {
-      setState(() {
-        file = xFile;
-        image = File(file!.path);
-      });
+      print("avatarga kirdiii");
+      context.read<UserDataCubit>().updateCurrentUserField(
+            fieldKey: UserFieldKeys.avatar,
+            value: xFile.path,
+          );
     }
   }
 
   Future<void> _getFromGallery() async {
+    ImagePicker picker = ImagePicker();
     XFile? xFile = await picker.pickImage(
       source: ImageSource.gallery,
       maxHeight: 512,
       maxWidth: 512,
     );
-    if (xFile != null) {
-      setState(() {
-        file = xFile;
-        image = File(file!.path);
-      });
+    if (xFile != null && context.mounted) {
+      context.read<UserDataCubit>().updateCurrentUserField(
+            fieldKey: UserFieldKeys.avatar,
+            value: xFile.path,
+          );
     }
   }
 }

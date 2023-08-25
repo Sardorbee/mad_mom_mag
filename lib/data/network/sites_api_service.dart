@@ -10,7 +10,7 @@ import 'package:mad_mom_mag/data/models/universal_data.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/utils/constants/constants.dart';
 
-class ApiService {
+class SitesApiService {
   // DIO SETTINGS
 
   final _dio = Dio(
@@ -22,10 +22,11 @@ class ApiService {
       connectTimeout: Duration(seconds: TimeOutConstants.connectTimeout),
       receiveTimeout: Duration(seconds: TimeOutConstants.receiveTimeout),
       sendTimeout: Duration(seconds: TimeOutConstants.sendTimeout),
+
     ),
   );
 
-  ApiService() {
+  SitesApiService() {
     _init();
   }
 
@@ -49,107 +50,20 @@ class ApiService {
       ),
     );
   }
+  //==================================Authentication Ending=====================//
 
-  //----------------------- AUTHENTICATION -------------------------
-
-  Future<UniversalData> sendCodeToGmail({
-    required String gmail,
-    required String password,
-  }) async {
+  Future<UniversalData> createWebsite(
+      {required WebsiteModel websiteModel}) async {
     Response response;
-    try {
-      response = await _dio.post(
-        '/gmail',
-        data: {
-          "gmail": gmail,
-          "password": password,
-        },
-      );
-
-      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        return UniversalData(data: response.data["message"]);
-      }
-      return UniversalData(error: "Other Error");
-    } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
-    } catch (error) {
-      return UniversalData(error: error.toString());
-    }
-  }
-
-  Future<UniversalData> confirmCode({required String code}) async {
-    Response response;
-    try {
-      response = await _dio.post(
-        '/password',
-        data: {"checkPass": code},
-      );
-
-      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        return UniversalData(data: response.data["message"]);
-      }
-      return UniversalData(error: "Other Error");
-    } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
-    } catch (error) {
-      return UniversalData(error: error.toString());
-    }
-  }
-
-  Future<UniversalData> registerUser({
-    required UserModel userModel,
-  }) async {
-    Response response;
-
     _dio.options.headers = {
       "Accept": "multipart/form-data",
     };
     try {
       response = await _dio.post(
-        '/register',
-        data: await userModel.getFormData(),
+        '/sites',
+        data: await websiteModel.getFormData(),
       );
-
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        await StorageRepository.putString("token", response.data['data']);
-        return UniversalData(data: response.data["message"]);
-      }
-      return UniversalData(error: "Other Error");
-    } on DioException catch (e) {
-      if (e.response != null) {
-        return UniversalData(error: e.response!.data["message"]);
-      } else {
-        return UniversalData(error: e.message!);
-      }
-    } catch (error) {
-      return UniversalData(error: error.toString());
-    }
-  }
-
-  Future<UniversalData> loginUser({
-    required String gmail,
-    required String password,
-  }) async {
-    Response response;
-    try {
-      response = await _dio.post(
-        '/login',
-        data: {
-          "gmail": gmail,
-          "password": password,
-        },
-      );
-
-      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        await StorageRepository.putString("token", response.data['data']);
         return UniversalData(data: response.data["data"]);
       }
       return UniversalData(error: "Other Error");
@@ -164,13 +78,18 @@ class ApiService {
     }
   }
 
-  Future<UniversalData> getProfileData() async {
+  Future<UniversalData> getWebsites() async {
     Response response;
     try {
-      response = await _dio.get('/users');
+      response = await _dio.get('/sites');
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
-        return UniversalData(data: UserModel.fromJson(response.data["data"]));
+        return UniversalData(
+          data: (response.data["data"] as List?)
+              ?.map((e) => WebsiteModel.fromJson(e))
+              .toList() ??
+              [],
+        );
       }
       return UniversalData(error: "Other Error");
     } on DioException catch (e) {
@@ -183,5 +102,25 @@ class ApiService {
       return UniversalData(error: error.toString());
     }
   }
-//==================================Authentication Ending=====================//
+
+  Future<UniversalData> getWebsiteById(int id) async {
+    Response response;
+    try {
+      response = await _dio.get('/sites/$id');
+
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(
+            data: WebsiteModel.fromJson(response.data["data"]));
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
 }

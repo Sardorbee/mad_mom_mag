@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mad_mom_mag/cubitss/auth_cubit/auth_cubit.dart';
+import 'package:mad_mom_mag/cubitss/auth_cubit/user_data_cubit/userdata_cubit.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/presentation/app_routes.dart';
 
 // ignore: must_be_immutable
 class ConfirmGmailCode extends StatelessWidget {
-  final UserModel userModel;
-
   ConfirmGmailCode({
     super.key,
-    required this.userModel,
   });
   final TextEditingController _codecont = TextEditingController();
 
@@ -20,8 +18,8 @@ class ConfirmGmailCode extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) async {
         if (state is AuthConfirmCodeSuccessState) {
-          await context.read<AuthCubit>().registerUser(userModel);
-          debugPrint("${userModel.avatar},${userModel.username}");
+          await context.read<AuthCubit>().registerUser(context.read<UserDataCubit>().state.userModel);
+          
           if (context.mounted) {
             Navigator.pushNamedAndRemoveUntil(
                 context, RouteNames.authStates, (route) => false);

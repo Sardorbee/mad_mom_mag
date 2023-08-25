@@ -29,26 +29,33 @@ class MonthsList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: months.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: MediaQuery.of(context).size.width * 0.25,
-            margin: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.06),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                  MediaQuery.of(context).size.height * 0.01),
-              color: Colors.black12,
-            ),
-            child: InkWell(
-              onTap: () {},
-              child: Center(
-                child: Text(
-                  months[index],
-                  style: const TextStyle(
-                    fontSize: 15,
+          return Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25,
+                margin: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.02),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.height * 0.01),
+                  color: Colors.black12,
+                ),
+                child: InkWell(
+                  onTap: () {},
+                  child: Center(
+                    child: Text(
+                      months[index],
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           );
         },
       ),

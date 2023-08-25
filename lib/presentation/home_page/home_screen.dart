@@ -1,5 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mad_mom_mag/cubitss/sites_cubit/sites_cubit.dart';
+import 'package:mad_mom_mag/data/models/sites_model/sites_model.dart';
+import 'package:mad_mom_mag/presentation/home_page/articles_page/articles_page.dart';
+import 'package:mad_mom_mag/presentation/home_page/sites_page/sites_description.dart';
+
+import 'package:mad_mom_mag/utils/constants/constants.dart';
+import 'package:mad_mom_mag/utils/loading_page.dart';
+import 'package:mad_mom_mag/utils/server_error_page.dart';
 import 'widgets/list_monts.dart';
 
 class MainDrwPage extends StatelessWidget {
@@ -7,300 +17,288 @@ class MainDrwPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height,
-      duration: const Duration(seconds: 1),
-      child: Padding(
-        padding:
-            EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.015),
-        child: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                ),
-                Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+    return Scaffold(
+      body: SafeArea(
+        child: BlocConsumer<SitesCubit, SitesState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            // context.read<SitesCubit>().getSites();
+            if (state is SitesLoaded) {
+              return CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
                       children: [
-                        const Text('Member'),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.005,
-                        ),
-                        const Text("name")
-                      ],
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.56,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () {},
-                        child: IconButton(
-                            splashRadius: 20,
-                            onPressed: () {},
-                            icon: const Icon(
-                              CupertinoIcons.bell_solid,
-                            )),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 9,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.height * 0.015),
-                            color: Colors.black12),
-                        child: TextFormField(
-                          onTap: (() {}),
-                          decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon: Icon(Icons.search),
-                              labelText: 'Search Your own Mad Mom Mag'),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.008,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        width: MediaQuery.of(context).size.height * 0.075,
-                        height: MediaQuery.of(context).size.height * 0.075,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.height * 0.015),
-                            color: Colors.black87),
-                        child: const Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                MonthsList(),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Exclusively for you',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.height * 0.024,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.02),
-                        child: Text(
-                          'See more',
-                          style: TextStyle(
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.016,
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.height * 0.02),
+                          child: Row(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text('Member'),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.005,
+                                  ),
+                                  const Text("name")
+                                ],
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.56,
+                              ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: InkWell(
+                                  onTap: () {},
+                                  child: IconButton(
+                                      splashRadius: 20,
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        CupertinoIcons.bell_solid,
+                                      )),
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                SizedBox(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                      ],
+                    ),
+                  ),
+                  _buildSearchBar(context),
+                  SliverToBoxAdapter(
+                    child: Column(
                       children: [
-                        for (int i = 0; i < 5; i++)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.34,
-                                    width: MediaQuery.of(context).size.height *
-                                        0.25,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            MediaQuery.of(context).size.height *
-                                                0.03,
-                                          ),
-                                          child: const SizedBox()),
+                        MonthsList(),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.height * 0.02),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Exclusively for you',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.024,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02),
+                                  child: Text(
+                                    'See more',
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.016,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  top:
-                                      MediaQuery.of(context).size.height * 0.25,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            MediaQuery.of(context).size.height *
-                                                0.01),
-                                    child: const Text('MMM May'),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        const SizedBox(height: 200, child: ArticlesData()),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.height * 0.02),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Sites',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.024,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      right: MediaQuery.of(context).size.width *
+                                          0.02),
+                                  child: Text(
+                                    'See more',
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.016,
+                                    ),
                                   ),
                                 ),
-                                Positioned(
-                                  top:
-                                      MediaQuery.of(context).size.height * 0.27,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            MediaQuery.of(context).size.height *
-                                                0.01),
-                                    child: const Text('Mad Mom Members'),
-                                  ),
-                                )
-                              ],
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        SitesModel sitesModel = state.sites[index];
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SitesDetails(sitesModel: sitesModel),
+                              ),
+                            );
+                          },
+                          leading: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            width: MediaQuery.of(context).size.height * 0.1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.height * 0.015,
+                              ),
+                              child: CachedNetworkImage(
+                                  imageUrl: "$baseUrl${sitesModel.image}"),
                             ),
                           ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Memberships',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.height * 0.024,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            right: MediaQuery.of(context).size.width * 0.02),
-                        child: Text(
-                          'See more',
-                          style: TextStyle(
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.016,
+                          title: Text(
+                            sitesModel.name,
+                            style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.03),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.height * 0.1,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.height * 0.015,
-                      ),
-                      child: const SizedBox(),
+                          trailing: Column(
+                            children: [
+                              Text(
+                                sitesModel.contact,
+                                style: TextStyle(
+                                    color: Colors.blue.shade600,
+                                    fontSize: MediaQuery.of(context).size.height *
+                                        0.03),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      childCount: state.sites.length,
                     ),
                   ),
-                  title: Text(
-                    'Forum Membership',
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height * 0.03),
-                  ),
-                  trailing: Column(
-                    children: [
-                      Text(
-                        "\$4.99",
-                        style: TextStyle(
-                            color: Colors.blue.shade600,
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.03),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.height * 0.035),
-                        child: Text(
-                          "year",
-                          style: TextStyle(
-                              color: Colors.blue.shade600,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.018),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                // ListTile(
-                //   onTap: () {},
-                //   leading: SizedBox(
-                //     height: MediaQuery.of(context).size.height * 0.1,
-                //     width: MediaQuery.of(context).size.height * 0.1,
-                //     child: ClipRRect(
-                //         borderRadius: BorderRadius.circular(
-                //           MediaQuery.of(context).size.height * 0.015,
-                //         ),
-                //         child: const SizedBox()),
-                //   ),
-                //   title: Text(
-                //     'Forum Membership',
-                //     style: TextStyle(
-                //         fontSize: MediaQuery.of(context).size.height * 0.03),
-                //   ),
-                //   trailing: Column(
-                //     children: [
-                //       Text(
-                //         "\$4.99",
-                //         style: TextStyle(
-                //             color: Colors.blue.shade600,
-                //             fontSize:
-                //                 MediaQuery.of(context).size.height * 0.03),
-                //       ),
-                //       Container(
-                //         margin: EdgeInsets.only(
-                //             left: MediaQuery.of(context).size.height * 0.035),
-                //         child: Text(
-                //           "year",
-                //           style: TextStyle(
-                //               color: Colors.blue.shade600,
-                //               fontSize:
-                //                   MediaQuery.of(context).size.height * 0.018),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-              ],
-            ),
-          ),
+                ],
+              );
+            } else if (state is SitesError) {
+              return const ErrorServerPage();
+            } else {
+              return const LoadingPage();
+            }
+          },
         ),
       ),
     );
+  }
+}
+
+Widget _buildSearchBar(BuildContext context) {
+  return SliverPersistentHeader(
+    pinned: true,
+    delegate: _SearchBarDelegate(
+      minHeight: 80,
+      maxHeight: 80,
+      child: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 9,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black12,
+                ),
+                child: TextFormField(
+                  onTap: () {},
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search),
+                    labelText: 'Search Your own Mad Mom Mag',
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            InkWell(
+              onTap: () {},
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black87,
+                ),
+                child: const Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SearchBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(_SearchBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

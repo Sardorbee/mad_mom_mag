@@ -15,6 +15,24 @@ class _StackMethodState extends State<StackMethod> {
   final TextEditingController _emailcontroller = TextEditingController();
 
   final TextEditingController _passwordcontroller = TextEditingController();
+  bool isEmailValid = false;
+  @override
+  void initState() {
+    super.initState();
+    _emailcontroller.addListener(_validateEmail);
+  }
+
+  final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  void _validateEmail() {
+    setState(() {
+      if (_emailRegex.hasMatch(_emailcontroller.text)) {
+        setState(() {
+          isEmailValid = true;
+        });
+      }
+    });
+  }
+
   bool obscureText = true;
   @override
   Widget build(BuildContext context) {
@@ -59,11 +77,17 @@ class _StackMethodState extends State<StackMethod> {
               child: Column(
                 children: [
                   TextFormField(
+                    textInputAction: TextInputAction.next,
                     controller: _emailcontroller,
-                    decoration: const InputDecoration(
-                      suffixIcon: Icon(Icons.check_circle_rounded),
+                    decoration: InputDecoration(
+                      errorText: _emailcontroller.text.isNotEmpty
+                          ? isEmailValid
+                              ? null
+                              : "Invalid EMail"
+                          : null,
+                      suffixIcon: const Icon(Icons.check_circle_rounded),
                       labelText: 'Email',
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   SizedBox(
@@ -130,23 +154,30 @@ class _StackMethodState extends State<StackMethod> {
                       onPressed: () async {
                         if (_emailcontroller.text.isNotEmpty &&
                             _passwordcontroller.text.isNotEmpty) {
-                        await context
-                            .read<AuthCubit>()
-                            .signInWithPasswordAndGmail(_emailcontroller.text,
-                                _passwordcontroller.text);
-                        if (context.mounted) {
-                        final authState = context.read<AuthCubit>().state;
+                          FocusScope.of(context).unfocus();
+                          await context
+                              .read<AuthCubit>()
+                              .signInWithPasswordAndGmail(_emailcontroller.text,
+                                  _passwordcontroller.text);
+                          if (context.mounted) {
+                            final authState = context.read<AuthCubit>().state;
 
-                          if (context.read<AuthCubit>().state
-                              is AuthLoggedState) {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, RouteNames.tabBox, (route) => false);
-                          } else if (authState is AuthErrorState) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(authState.errorText)));
+                            if (context.read<AuthCubit>().state
+                                is AuthLoggedState) {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, RouteNames.tabBox, (route) => false);
+                            } else if (authState is AuthErrorState) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(authState.errorText)));
+                            }
                           }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  duration: Duration(seconds: 2),
+                                  backgroundColor: Colors.red,
+                                  content: Text("All fields must be filled")));
                         }
-                        } else {}
                       },
                       child: const Center(
                         child: Text('Sign In'),

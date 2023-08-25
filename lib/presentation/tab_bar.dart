@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
+
 import 'package:mad_mom_mag/presentation/profile_page/profile_page.dart';
 
 import 'bookmark_page/bookmark_page.dart';
@@ -17,6 +18,7 @@ class TabBarScreen extends StatefulWidget {
 class _TabBarScreenState extends State<TabBarScreen> {
   final List<Widget> _pages = [
     const HomePage(),
+    // const UsersApi(),
     const MessagePage(),
     const BookmarkPage(),
     const ProfilePage(),
@@ -46,6 +48,12 @@ class _TabBarScreenState extends State<TabBarScreen> {
               ),
               label: '',
             ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(
+            //     Icons.people,
+            //   ),
+            //   label: '',
+            // ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.view_cozy,
