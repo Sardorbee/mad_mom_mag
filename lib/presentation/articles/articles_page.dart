@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mad_mom_mag/cubitss/articles_cubit/articles_cubit.dart';
 import 'package:mad_mom_mag/data/models/articles_model/articles_model.dart';
-import 'package:mad_mom_mag/presentation/home_page/articles_page/article_details.dart';
+import 'package:mad_mom_mag/data/models/form_status/form_status.dart';
+import 'package:mad_mom_mag/presentation/articles/widget/article_details.dart';
 import 'package:mad_mom_mag/utils/constants/constants.dart';
 import 'package:mad_mom_mag/utils/server_error_page.dart';
 
@@ -12,15 +13,15 @@ class ArticlesData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ArticlesCubit, ArticlesState>(
+    return BlocConsumer<ArticleCubit, ArticleState>(
       listener: (context, state) {
-        if (state is ArticlesError) {
+        if (state.status == FormStatus.failure) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.errorText)));
+              .showSnackBar(SnackBar(content: Text(state.statusText)));
         }
       },
       builder: (context, state) {
-        if (state is ArticlesLoaded) {
+        if (state.status == FormStatus.success) {
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: state.articles.length,
@@ -51,7 +52,8 @@ class ArticlesData extends StatelessWidget {
                             borderRadius: BorderRadius.circular(
                               MediaQuery.of(context).size.height * 0.03,
                             ),
-                            child: CachedNetworkImage(imageUrl: "$baseUrl${articlesModel.image}"),
+                            child: CachedNetworkImage(
+                                imageUrl: "$baseUrl${articlesModel.avatar}"),
                           ),
                         ),
                         Padding(
@@ -75,9 +77,11 @@ class ArticlesData extends StatelessWidget {
               );
             },
           );
-        }else if (state is ArticlesError) {
-          return  Center(child: Text(state.errorText),);
-        }  else {
+        } else if (state.status == FormStatus.failure) {
+          return Center(
+            child: Text(state.statusText),
+          );
+        } else {
           return const SizedBox();
         }
       },

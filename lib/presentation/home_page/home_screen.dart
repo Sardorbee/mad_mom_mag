@@ -2,11 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mad_mom_mag/cubitss/sites_cubit/sites_cubit.dart';
+import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
+import 'package:mad_mom_mag/cubitss/website_cubit/website_cubit.dart';
+import 'package:mad_mom_mag/data/models/form_status/form_status.dart';
 import 'package:mad_mom_mag/data/models/sites_model/sites_model.dart';
-import 'package:mad_mom_mag/presentation/home_page/articles_page/articles_page.dart';
-import 'package:mad_mom_mag/presentation/home_page/sites_page/sites_description.dart';
-
+import 'package:mad_mom_mag/presentation/articles/articles_page.dart';
+import 'package:mad_mom_mag/presentation/websites/widgets/sites_details.dart';
 import 'package:mad_mom_mag/utils/constants/constants.dart';
 import 'package:mad_mom_mag/utils/loading_page.dart';
 import 'package:mad_mom_mag/utils/server_error_page.dart';
@@ -19,11 +20,11 @@ class MainDrwPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocConsumer<SitesCubit, SitesState>(
+        child: BlocConsumer<WebsiteCubit, WebsiteState>(
           listener: (context, state) {},
           builder: (context, state) {
             // context.read<SitesCubit>().getSites();
-            if (state is SitesLoaded) {
+            if (state.status == FormStatus.success) {
               return CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
@@ -136,7 +137,9 @@ class MainDrwPage extends StatelessWidget {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  context.read<NavbarCubit>().updateScreen(1);
+                                },
                                 child: Container(
                                   margin: EdgeInsets.only(
                                       right: MediaQuery.of(context).size.width *
@@ -163,53 +166,59 @@ class MainDrwPage extends StatelessWidget {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-                        SitesModel sitesModel = state.sites[index];
-                        return ListTile(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    SitesDetails(sitesModel: sitesModel),
+                        WebsiteModel sitesModel = state.websites[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SitesDetails(sitesModel: sitesModel),
+                                ),
+                              );
+                            },
+                            leading: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              width: MediaQuery.of(context).size.height * 0.12,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.height * 0.015,
+                                ),
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) => const FlutterLogo(),
+
+                                    imageUrl: "$baseUrl${sitesModel.image}"),
                               ),
-                            );
-                          },
-                          leading: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            width: MediaQuery.of(context).size.height * 0.1,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.height * 0.015,
-                              ),
-                              child: CachedNetworkImage(
-                                  imageUrl: "$baseUrl${sitesModel.image}"),
                             ),
-                          ),
-                          title: Text(
-                            sitesModel.name,
-                            style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.03),
-                          ),
-                          trailing: Column(
-                            children: [
-                              Text(
-                                sitesModel.contact,
-                                style: TextStyle(
-                                    color: Colors.blue.shade600,
-                                    fontSize: MediaQuery.of(context).size.height *
-                                        0.03),
-                              ),
-                            ],
+                            title: Text(
+                              sitesModel.name,
+                              style: TextStyle(
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.03),
+                            ),
+                            trailing: Column(
+                              children: [
+                                Text(
+                                  sitesModel.contact,
+                                  style: TextStyle(
+                                      color: Colors.blue.shade600,
+                                      fontSize: MediaQuery.of(context).size.height *
+                                          0.03),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
-                      childCount: state.sites.length,
+                      childCount: state.websites.length,
                     ),
                   ),
                 ],
               );
-            } else if (state is SitesError) {
+            } else if (state.status == FormStatus.failure) {
               return const ErrorServerPage();
             } else {
               return const LoadingPage();

@@ -1,19 +1,44 @@
 part of 'articles_cubit.dart';
 
-@immutable
-sealed class ArticlesState {}
 
-final class ArticlesInitial extends ArticlesState {}
+class ArticleState extends Equatable {
+  final String statusText;
+  final ArticlesModel articlesModel;
+  ArticlesModel? articleDetail;
+  final List<ArticlesModel> articles;
+  final FormStatus status;
 
-final class ArticlesLoading extends ArticlesState {}
+  ArticleState({
+    required this.articlesModel,
+    this.articleDetail,
+    this.statusText = "",
+    this.status = FormStatus.pure,
+    required this.articles,
+  });
 
-final class ArticlesError extends ArticlesState {
-  final String errorText;
-  ArticlesError({required this.errorText});
-}
+  ArticleState copyWith({
+    String? statusText,
+    ArticlesModel? articlesModel,
+    ArticlesModel? articleDetail,
+    List<ArticlesModel>? articles,
+    FormStatus? status,
+  }) =>
+      ArticleState(
+        articlesModel: articlesModel ?? this.articlesModel,
+        articleDetail: articleDetail ?? this.articleDetail,
+        articles: articles ?? this.articles,
+        statusText: statusText ?? this.statusText,
+        status: status ?? this.status,
+      );
 
-final class ArticlesLoaded extends ArticlesState {
-  final List<dynamic> articles;
+  @override
+  List<Object?> get props => [
+    articlesModel,
+    articleDetail,
+    statusText,
+    status,
+    articles,
+  ];
 
-  ArticlesLoaded({required this.articles});
+
 }

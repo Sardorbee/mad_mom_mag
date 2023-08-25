@@ -22,7 +22,6 @@ class SitesApiService {
       connectTimeout: Duration(seconds: TimeOutConstants.connectTimeout),
       receiveTimeout: Duration(seconds: TimeOutConstants.receiveTimeout),
       sendTimeout: Duration(seconds: TimeOutConstants.sendTimeout),
-
     ),
   );
 
@@ -40,6 +39,9 @@ class SitesApiService {
         },
         onRequest: (requestOptions, handler) async {
           debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
+          requestOptions.headers
+              .addAll({"token": StorageRepository.getString("token")});
+
           // return handler.resolve(Response(requestOptions: requestOptions, data: {"name": "ali", "age": 26}));
           return handler.next(requestOptions);
         },
@@ -50,7 +52,6 @@ class SitesApiService {
       ),
     );
   }
-  //==================================Authentication Ending=====================//
 
   Future<UniversalData> createWebsite(
       {required WebsiteModel websiteModel}) async {
@@ -78,6 +79,32 @@ class SitesApiService {
     }
   }
 
+  Future<UniversalData> updateWebsite(
+      {required WebsiteModel websiteModel, required int id}) async {
+    Response response;
+    _dio.options.headers = {
+      "Accept": "multipart/form-data",
+    };
+    try {
+      response = await _dio.put(
+        '/sites/$id',
+        data: await websiteModel.getFormData(),
+      );
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(data: response.data["data"]);
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
+
   Future<UniversalData> getWebsites() async {
     Response response;
     try {
@@ -86,8 +113,8 @@ class SitesApiService {
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
         return UniversalData(
           data: (response.data["data"] as List?)
-              ?.map((e) => WebsiteModel.fromJson(e))
-              .toList() ??
+                  ?.map((e) => WebsiteModel.fromJson(e))
+                  .toList() ??
               [],
         );
       }

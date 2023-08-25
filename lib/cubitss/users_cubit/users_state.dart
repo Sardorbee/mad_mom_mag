@@ -3,19 +3,19 @@ part of 'users_cubit.dart';
 
 
 @immutable
-abstract class ProfileState extends Equatable {}
+abstract class UserProfileState extends Equatable {}
 
-class ProfileInitial extends ProfileState {
+class ProfileInitial extends UserProfileState {
   @override
   List<Object?> get props => [];
 }
 
-class ProfileLoadingState extends ProfileState {
+class ProfileLoadingState extends UserProfileState {
   @override
   List<Object?> get props => [];
 }
 
-class ProfileSuccessState extends ProfileState {
+class ProfileSuccessState extends UserProfileState {
   final UserModel userModel;
 
   ProfileSuccessState({required this.userModel});
@@ -24,7 +24,7 @@ class ProfileSuccessState extends ProfileState {
   List<Object?> get props => [userModel];
 }
 
-class ProfileErrorState extends ProfileState {
+class ProfileErrorState extends UserProfileState {
   final String errorText;
 
   ProfileErrorState({required this.errorText});

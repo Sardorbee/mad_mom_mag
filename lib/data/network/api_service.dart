@@ -39,6 +39,9 @@ class ApiService {
         },
         onRequest: (requestOptions, handler) async {
           debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
+          requestOptions.headers
+              .addAll({"token": StorageRepository.getString("token")});
+
           // return handler.resolve(Response(requestOptions: requestOptions, data: {"name": "ali", "age": 26}));
           return handler.next(requestOptions);
         },

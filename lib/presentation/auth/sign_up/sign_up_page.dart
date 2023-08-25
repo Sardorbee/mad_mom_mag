@@ -214,7 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               height: 50,
                               width: 120,
                               child: image != null
-                                  ? Image.file(image!)
+                                  ? Image. file(image!)
                                   : const SizedBox(),
                             )
                           ],
@@ -405,7 +405,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
 
     if (xFile != null) {
-      print("avatarga kirdiii");
+
+      image = File(xFile.path);
       context.read<UserDataCubit>().updateCurrentUserField(
             fieldKey: UserFieldKeys.avatar,
             value: xFile.path,
@@ -421,6 +422,7 @@ class _SignUpPageState extends State<SignUpPage> {
       maxWidth: 512,
     );
     if (xFile != null && context.mounted) {
+      image = File(xFile.path);
       context.read<UserDataCubit>().updateCurrentUserField(
             fieldKey: UserFieldKeys.avatar,
             value: xFile.path,

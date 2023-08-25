@@ -22,7 +22,6 @@ class ArticlesApiService {
       connectTimeout: Duration(seconds: TimeOutConstants.connectTimeout),
       receiveTimeout: Duration(seconds: TimeOutConstants.receiveTimeout),
       sendTimeout: Duration(seconds: TimeOutConstants.sendTimeout),
-
     ),
   );
 
@@ -40,6 +39,9 @@ class ArticlesApiService {
         },
         onRequest: (requestOptions, handler) async {
           debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
+          requestOptions.headers
+              .addAll({"token": StorageRepository.getString("token")});
+
           // return handler.resolve(Response(requestOptions: requestOptions, data: {"name": "ali", "age": 26}));
           return handler.next(requestOptions);
         },
@@ -50,7 +52,59 @@ class ArticlesApiService {
       ),
     );
   }
-  //==================================Authentication Ending=====================//
+
+  //==================================Articles=====================//
+  Future<UniversalData> createArticle(
+      {required ArticlesModel articlesModel}) async {
+    Response response;
+    _dio.options.headers = {
+      "Accept": "multipart/form-data",
+    };
+    try {
+      response = await _dio.post(
+        '/articles',
+        data: await articlesModel.getFormData(),
+      );
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(data: response.data["data"]);
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
+
+  Future<UniversalData> updateArticle(
+      {required ArticlesModel articlesModel, required int id}) async {
+    Response response;
+    _dio.options.headers = {
+      "Accept": "multipart/form-data",
+    };
+    try {
+      response = await _dio.put(
+        '/articles/$id',
+        data: await articlesModel.getFormData(),
+      );
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(data: response.data["data"]);
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
 
   Future<UniversalData> getArticles() async {
     Response response;
@@ -80,7 +134,24 @@ class ArticlesApiService {
     }
   }
 
+  Future<UniversalData> getArticlesById(int id) async {
+    Response response;
+    try {
+      response = await _dio.get('/articles/$id');
 
-
-
+      if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
+        return UniversalData(
+            data: WebsiteModel.fromJson(response.data["data"]));
+      }
+      return UniversalData(error: "Other Error");
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return UniversalData(error: e.response!.data["message"]);
+      } else {
+        return UniversalData(error: e.message!);
+      }
+    } catch (error) {
+      return UniversalData(error: error.toString());
+    }
+  }
 }

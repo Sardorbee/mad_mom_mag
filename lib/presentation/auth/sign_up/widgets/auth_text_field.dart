@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 // ignore: must_be_immutable
 class AuthTextField extends StatelessWidget {
-  final IconData icon;
+   IconData? icon;
   final String label;
   final TextInputType type;
   bool obscure;
@@ -17,7 +17,7 @@ class AuthTextField extends StatelessWidget {
       {super.key,
       this.errorText,
       this.inputFormatter,
-      required this.icon,
+       this.icon,
       this.suffixIcon,
       required this.label,
       required this.type,

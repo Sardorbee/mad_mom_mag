@@ -13,4 +13,7 @@ class SitesRopsitory {
       await sitesApiService.getWebsiteById(id);
   Future<UniversalData> createWebsites(WebsiteModel websiteModel) async =>
       await sitesApiService.createWebsite(websiteModel: websiteModel);
+  Future<UniversalData> updateWebsite(
+          WebsiteModel websiteModel, int id) async =>
+      await sitesApiService.updateWebsite(websiteModel: websiteModel, id: id);
 }

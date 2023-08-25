@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mad_mom_mag/cubitss/articles_cubit/articles_cubit.dart';
 import 'package:mad_mom_mag/cubitss/auth_cubit/auth_cubit.dart';
 import 'package:mad_mom_mag/cubitss/auth_cubit/user_data_cubit/userdata_cubit.dart';
-import 'package:mad_mom_mag/cubitss/sites_cubit/sites_cubit.dart';
 import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
 import 'package:mad_mom_mag/cubitss/users_cubit/users_cubit.dart';
+import 'package:mad_mom_mag/cubitss/website_cubit/website_cubit.dart';
 import 'package:mad_mom_mag/data/local/shared_prefs.dart';
 import 'package:mad_mom_mag/data/network/api_service.dart';
 import 'package:mad_mom_mag/data/network/articles_api_service.dart';
@@ -43,6 +43,8 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider(
           create: (context) => ArticlesRopsitory(articlesApiService: articlesApiService),
+        ),RepositoryProvider(
+          create: (context) => ProfileRepository(apiService: apiService),
         ),
         RepositoryProvider(
           create: (context) => SitesRopsitory( sitesApiService: sitesApiService),
@@ -62,16 +64,20 @@ class App extends StatelessWidget {
             create: (context) => NavbarCubit(),
           ),
           BlocProvider(
-            create: (context) => ArticlesCubit(
+            create: (context) => ArticleCubit(
                 articlesRopsitory: context.read<ArticlesRopsitory>()),
           ),
+
           BlocProvider(
             create: (context) =>
-                SitesCubit(sitesRopsitory: context.read<SitesRopsitory>()),
+                ProfileCubit(profileRepository: context.read<ProfileRepository>()),
           ),
           
           BlocProvider(
             create: (context) => UserDataCubit(),
+          ),
+          BlocProvider(
+            create: (context) => WebsiteCubit(websiteRepository:context.read<SitesRopsitory>() ),
           )
         ],
         child: const MyApp(),

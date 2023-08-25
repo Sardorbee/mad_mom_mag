@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
+import 'package:mad_mom_mag/presentation/articles/articles.dart';
 
 import 'package:mad_mom_mag/presentation/profile_page/profile_page.dart';
+import 'package:mad_mom_mag/presentation/websites/websites.dart';
 
 import 'bookmark_page/bookmark_page.dart';
 import 'home_page/drawer_page.dart';
@@ -18,7 +20,8 @@ class TabBarScreen extends StatefulWidget {
 class _TabBarScreenState extends State<TabBarScreen> {
   final List<Widget> _pages = [
     const HomePage(),
-    // const UsersApi(),
+    const WebsitesScreen(),
+    const ArticlesScreen(),
     const MessagePage(),
     const BookmarkPage(),
     const ProfilePage(),
@@ -48,12 +51,18 @@ class _TabBarScreenState extends State<TabBarScreen> {
               ),
               label: '',
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(
-            //     Icons.people,
-            //   ),
-            //   label: '',
-            // ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.web,
+              ),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.article,
+              ),
+              label: '',
+            ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.view_cozy,
@@ -83,10 +92,6 @@ class _TabBarScreenState extends State<TabBarScreen> {
   }
 }
 
-
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:madmagazine/screens/profile_page/profile_page.dart';
 
@@ -114,7 +119,7 @@ class _TabBarScreenState extends State<TabBarScreen> {
 //   void _onItemTapped(int index) {
 //     setState(() {
 //       _selectedIndex = index;
-      
+
 //     });
 //   }
 
@@ -159,18 +164,6 @@ class _TabBarScreenState extends State<TabBarScreen> {
 //     );
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:madmagazine/screens/profile_page/profile_page.dart';

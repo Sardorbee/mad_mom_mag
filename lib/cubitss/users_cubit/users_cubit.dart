@@ -7,7 +7,7 @@ import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 
 part 'users_state.dart';
 
-class ProfileCubit extends Cubit<ProfileState> {
+class ProfileCubit extends Cubit<UserProfileState> {
   ProfileCubit({required this.profileRepository}) : super(ProfileInitial());
 
   final ProfileRepository profileRepository;
