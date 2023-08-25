@@ -97,7 +97,9 @@ class MainDrwPage extends StatelessWidget {
                                 ),
                               ),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  context.read<NavbarCubit>().updateScreen(2);
+                                },
                                 child: Container(
                                   margin: EdgeInsets.only(
                                       right: MediaQuery.of(context).size.width *
