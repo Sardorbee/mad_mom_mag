@@ -19,6 +19,6 @@ class AuthSendCodeSuccessState extends AuthState {}
 class AuthRegisteredState extends AuthState {}
 
 class AuthConfirmCodeSuccessState extends AuthState {}
-class AuthConfirmCodeAlreadythereState extends AuthState {}
+class AuthConfirmCodeAlreadyThereState extends AuthState {}
 
 class AuthLoggedState extends AuthState {}

@@ -3,11 +3,11 @@ part of 'website_cubit.dart';
 class WebsiteState extends Equatable {
   final String statusText;
   final WebsiteModel websiteModel;
-  WebsiteModel? websiteDetail;
+  final WebsiteModel? websiteDetail;
   final List<WebsiteModel> websites;
   final FormStatus status;
 
-  WebsiteState({
+  const WebsiteState({
     required this.websiteModel,
     this.websiteDetail,
     this.statusText = "",

@@ -7,17 +7,17 @@ import 'package:mad_mom_mag/data/models/articles_model/filed_keys.dart';
 import 'package:mad_mom_mag/data/models/form_status/form_status.dart';
 import 'package:mad_mom_mag/data/models/universal_data.dart';
 import 'package:mad_mom_mag/data/repositories/articles_repo.dart';
-import 'package:mad_mom_mag/utils/ui_utils/error_message_dialog.dart';
 
 part 'articles_state.dart';
 
 class ArticleCubit extends Cubit<ArticleState> {
-  ArticleCubit({required this.articlesRopsitory})
+  ArticleCubit({required this.articlesRepository})
       : super(
           ArticleState(
             articlesModel: ArticlesModel(
                 artId: 0,
                 image: '',
+                hashtag: '',
                 title: '',
                 description: '',
                 likes: '',
@@ -33,7 +33,7 @@ class ArticleCubit extends Cubit<ArticleState> {
     getArticles();
   }
 
-  final ArticlesRopsitory articlesRopsitory;
+  final ArticlesRopsitory articlesRepository;
 
   createArticle() async {
     emit(state.copyWith(
@@ -41,7 +41,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       statusText: "",
     ));
     UniversalData response =
-        await articlesRopsitory.createArticles(state.articlesModel);
+        await articlesRepository.createArticles(state.articlesModel);
     if (response.error.isEmpty) {
       emit(
         state.copyWith(
@@ -63,7 +63,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       statusText: "",
     ));
     UniversalData response =
-        await articlesRopsitory.updateArticles(state.articlesModel, id);
+        await articlesRepository.updateArticles(state.articlesModel, id);
     if (response.error.isEmpty) {
       emit(
         state.copyWith(
@@ -86,7 +86,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       statusText: "",
     ));
 
-    UniversalData response = await articlesRopsitory.getArticles();
+    UniversalData response = await articlesRepository.getArticles();
 
     if (response.error.isEmpty) {
       emit(
@@ -109,7 +109,7 @@ class ArticleCubit extends Cubit<ArticleState> {
       status: FormStatus.loading,
       statusText: "",
     ));
-    UniversalData response = await articlesRopsitory.getArticlesById(id);
+    UniversalData response = await articlesRepository.getArticlesById(id);
     if (response.error.isEmpty) {
       emit(
         state.copyWith(
@@ -148,6 +148,10 @@ class ArticleCubit extends Cubit<ArticleState> {
       case ArticleFieldKeys.image:
         {
           currentArticle = currentArticle.copyWith(image: value as String);
+          break;
+        }case ArticleFieldKeys.hashtag:
+        {
+          currentArticle = currentArticle.copyWith(hashtag: value as String);
           break;
         }
     }

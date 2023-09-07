@@ -1,14 +1,13 @@
 part of 'articles_cubit.dart';
 
-
 class ArticleState extends Equatable {
   final String statusText;
   final ArticlesModel articlesModel;
-  ArticlesModel? articleDetail;
+  final ArticlesModel? articleDetail;
   final List<ArticlesModel> articles;
   final FormStatus status;
 
-  ArticleState({
+  const ArticleState({
     required this.articlesModel,
     this.articleDetail,
     this.statusText = "",
@@ -33,12 +32,10 @@ class ArticleState extends Equatable {
 
   @override
   List<Object?> get props => [
-    articlesModel,
-    articleDetail,
-    statusText,
-    status,
-    articles,
-  ];
-
-
+        articlesModel,
+        articleDetail,
+        statusText,
+        status,
+        articles,
+      ];
 }

@@ -27,6 +27,8 @@ dependencies:
   equatable: ^2.0.5
   lottie: ^2.6.0
   url_launcher: ^6.1.12
+  mask_text_input_formatter:
+  get_it: ^7.6.4
 
 dev_dependencies:
   flutter_test:

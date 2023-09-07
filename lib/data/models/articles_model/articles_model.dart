@@ -11,6 +11,7 @@ class ArticlesModel {
   DateTime addDate;
   String username;
   String avatar;
+  String hashtag;
   String profession;
   int userId;
 
@@ -18,6 +19,7 @@ class ArticlesModel {
     required this.artId,
     required this.image,
     required this.title,
+    required this.hashtag,
     required this.description,
     required this.likes,
     required this.views,
@@ -34,6 +36,7 @@ class ArticlesModel {
         title: json["title"] as String? ?? '',
         description: json["description"] as String? ?? '',
         likes: json["likes"] as String? ?? '',
+    hashtag: json["hashtag"] as String? ?? '',
         views: json["views"] as String? ?? '',
         addDate: DateTime.parse(json["add_date"]?? DateTime.now().toIso8601String()),
         username: json["username"] as String? ?? '',
@@ -46,6 +49,7 @@ class ArticlesModel {
     int? artId,
     String? image,
     String? title,
+    String? hashtag,
     String? description,
     String? likes,
     String? views,
@@ -58,6 +62,7 @@ class ArticlesModel {
       ArticlesModel(
         artId: artId ?? this.artId,
         title: title ?? this.title,
+        hashtag: hashtag ?? this.hashtag,
         description: description ?? this.description,
         likes: likes ?? this.likes,
         views: views ?? this.views,
@@ -72,6 +77,7 @@ class ArticlesModel {
   Map<String, dynamic> toJson() => {
         "image": image,
         "title": title,
+        "hashtag": hashtag,
         "description": description,
       };
 
@@ -80,6 +86,7 @@ class ArticlesModel {
     String fileName = file.path.split('/').last;
     return FormData.fromMap({
       "title": title,
+      "hashtag": hashtag,
       "description": description,
       "image": await MultipartFile.fromFile(file.path, filename: fileName),
     });
@@ -90,6 +97,7 @@ class ArticlesModel {
     return '''
       "image": $image,
         "title": $title,
+        "hashtag": $hashtag,
         "description": $description,
     ''';
   }

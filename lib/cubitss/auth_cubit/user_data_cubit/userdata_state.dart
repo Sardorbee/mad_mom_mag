@@ -4,7 +4,7 @@ class UserDataState extends Equatable {
   final String errorText;
   final UserModel userModel;
 
-  UserDataState({
+  const UserDataState({
     required this.userModel,
     required this.errorText,
   });

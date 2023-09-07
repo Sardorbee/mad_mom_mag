@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mad_mom_mag/cubitss/auth_cubit/auth_cubit.dart';
 import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
+import 'package:mad_mom_mag/cubitss/users_cubit/users_cubit.dart';
 import 'package:mad_mom_mag/cubitss/website_cubit/website_cubit.dart';
 import 'package:mad_mom_mag/data/models/form_status/form_status.dart';
 import 'package:mad_mom_mag/data/models/sites_model/sites_model.dart';
@@ -30,25 +32,39 @@ class MainDrwPage extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: Column(
                       children: [
-
                         Padding(
                           padding: EdgeInsets.only(
                               left: MediaQuery.of(context).size.height * 0.02),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Text('Member'),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.005,
-                                  ),
-                                  const Text("name")
-                                ],
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.56,
+                              BlocBuilder<ProfileCubit, UserProfileState>(
+                                builder: (context, state) {
+                                  if (state is ProfileSuccessState) {
+                                    return InkWell(
+                                      onTap: () {
+                                        context
+                                            .read<NavbarCubit>()
+                                            .updateScreen(5);
+                                      },
+                                      child: Text(
+                                        state.userModel.username,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return const Text(
+                                      "",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,
@@ -92,8 +108,8 @@ class MainDrwPage extends StatelessWidget {
                                 'Exclusively for you',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.024,
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.024,
                                 ),
                               ),
                               InkWell(
@@ -134,8 +150,8 @@ class MainDrwPage extends StatelessWidget {
                                 'Sites',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.024,
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.024,
                                 ),
                               ),
                               InkWell(
@@ -170,7 +186,7 @@ class MainDrwPage extends StatelessWidget {
                       (BuildContext context, int index) {
                         WebsiteModel sitesModel = state.websites[index];
                         return Padding(
-                          padding: EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
                             onTap: () {
                               Navigator.push(
@@ -189,17 +205,17 @@ class MainDrwPage extends StatelessWidget {
                                   MediaQuery.of(context).size.height * 0.015,
                                 ),
                                 child: CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) => const FlutterLogo(),
-
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) =>
+                                        const FlutterLogo(),
                                     imageUrl: "$baseUrl${sitesModel.image}"),
                               ),
                             ),
                             title: Text(
                               sitesModel.name,
                               style: TextStyle(
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.03),
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.03),
                             ),
                             trailing: Column(
                               children: [
@@ -207,8 +223,9 @@ class MainDrwPage extends StatelessWidget {
                                   sitesModel.contact,
                                   style: TextStyle(
                                       color: Colors.blue.shade600,
-                                      fontSize: MediaQuery.of(context).size.height *
-                                          0.03),
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.03),
                                 ),
                               ],
                             ),

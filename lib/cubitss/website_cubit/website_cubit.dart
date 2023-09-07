@@ -68,7 +68,7 @@ class WebsiteCubit extends Cubit<WebsiteState> {
         ),
       );
     } else {
-      showErrorMessage(message: response.error, context: context);
+     if(context.mounted) showErrorMessage(message: response.error, context: context);
       emit(state.copyWith(
         status: FormStatus.failure,
         statusText: response.error,

@@ -26,11 +26,13 @@ class _UpdateArticleState extends State<UpdateArticle> {
   File? image;
   TextEditingController titleCont = TextEditingController();
   TextEditingController descriptionCont = TextEditingController();
+  TextEditingController hashtagCont = TextEditingController();
 
   @override
   void initState() {
     titleCont.text = widget.articlesModel.title;
     descriptionCont.text = widget.articlesModel.description;
+    hashtagCont.text = widget.articlesModel.hashtag;
 
     super.initState();
   }
@@ -76,11 +78,11 @@ class _UpdateArticleState extends State<UpdateArticle> {
                         WebsiteTextField(
                             controller: titleCont,
                             onChanged: (value) {
-                              context.read<WebsiteCubit>().updateWebsiteField(
-                                  fieldKey: WebsiteFieldKeys.name,
+                              context.read<ArticleCubit>().updateArticleField(
+                                  fieldKey: ArticleFieldKeys.title,
                                   value: value);
                             },
-                            label: "  Site Name",
+                            label: "  Article title",
                             type: TextInputType.name),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
@@ -88,12 +90,24 @@ class _UpdateArticleState extends State<UpdateArticle> {
                         WebsiteTextField(
                             controller: descriptionCont,
                             onChanged: (value) {
-                              context.read<WebsiteCubit>().updateWebsiteField(
-                                  fieldKey: WebsiteFieldKeys.link,
+                              context.read<ArticleCubit>().updateArticleField(
+                                  fieldKey: ArticleFieldKeys.description,
                                   value: value);
                             },
-                            label: "  Site Link",
-                            type: TextInputType.phone),
+                            label: "  Article description",
+                            type: TextInputType.text),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        WebsiteTextField(
+                            controller: hashtagCont,
+                            onChanged: (value) {
+                              context.read<ArticleCubit>().updateArticleField(
+                                  fieldKey: ArticleFieldKeys.hashtag,
+                                  value: value);
+                            },
+                            label: "  Article hashtag",
+                            type: TextInputType.text),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),

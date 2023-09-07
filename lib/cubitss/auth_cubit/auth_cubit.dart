@@ -1,8 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mad_mom_mag/data/local/shared_prefs.dart';
-
 import 'package:mad_mom_mag/data/models/universal_data.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/data/repositories/auth_repo.dart';
@@ -75,7 +73,7 @@ class AuthCubit extends Cubit<AuthState> {
     } else {
       if (universalData.error ==
           "You are already authorized! Siz allaqachon avtorizatsiya qilgansiz!") {
-        emit(AuthConfirmCodeAlreadythereState());
+        emit(AuthConfirmCodeAlreadyThereState());
       }
       emit(AuthErrorState(errorText: universalData.error));
     }

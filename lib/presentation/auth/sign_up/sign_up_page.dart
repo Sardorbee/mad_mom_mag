@@ -11,6 +11,8 @@ import 'package:mad_mom_mag/presentation/auth/sign_in/sign_in_page.dart';
 import 'package:mad_mom_mag/presentation/auth/sign_up/widgets/auth_text_field.dart';
 import 'package:mad_mom_mag/presentation/auth/confirm_page/confirm_code.dart';
 import 'package:mad_mom_mag/presentation/auth/sign_up/widgets/dilalogs.dart';
+import 'package:mad_mom_mag/presentation/auth/sign_up/widgets/phone_text_field.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -20,6 +22,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  FocusNode focusNode = FocusNode();
+
   bool obscureText = true;
   bool isEmailValid = false;
   TextEditingController gmailCont = TextEditingController();
@@ -139,17 +143,22 @@ class _SignUpPageState extends State<SignUpPage> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
-                        AuthTextField(
-                            onChanged: (value) {
-                              context
-                                  .read<UserDataCubit>()
-                                  .updateCurrentUserField(
-                                      fieldKey: UserFieldKeys.contact,
-                                      value: value);
-                            },
-                            icon: Icons.phone,
-                            label: "Phone Number",
-                            type: TextInputType.phone),
+                        PhoneTextField(
+                          hintText: "(__) ___-__-__",
+                          keyboardType: TextInputType.phone,
+                          textInputAction: TextInputAction.next,
+                          textAlign: TextAlign.start,
+                          focusNode: focusNode,
+                          maskFormaters: MaskTextInputFormatter(
+                              mask: '## ### ## ##',
+                              filter: {"#": RegExp(r'[0-9]')},
+                              type: MaskAutoCompletionType.lazy),
+                          onChanged: (v) {
+                            if (v == 12) {
+                              focusNode.unfocus();
+                            }
+                          },
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
@@ -214,7 +223,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               height: 50,
                               width: 120,
                               child: image != null
-                                  ? Image. file(image!)
+                                  ? Image.file(image!)
                                   : const SizedBox(),
                             )
                           ],
@@ -405,7 +414,6 @@ class _SignUpPageState extends State<SignUpPage> {
     );
 
     if (xFile != null) {
-
       image = File(xFile.path);
       context.read<UserDataCubit>().updateCurrentUserField(
             fieldKey: UserFieldKeys.avatar,

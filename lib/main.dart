@@ -16,72 +16,61 @@ import 'package:mad_mom_mag/data/repositories/auth_repo.dart';
 import 'package:mad_mom_mag/data/repositories/sites_repo.dart';
 import 'package:mad_mom_mag/data/repositories/users_repo.dart';
 import 'package:mad_mom_mag/presentation/app_routes.dart';
+import 'package:mad_mom_mag/service/get_it.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  getItSetup();
 
   await StorageRepository.getInstance();
 
-  
-  runApp(App(apiService: ApiService(), articlesApiService: ArticlesApiService(), sitesApiService: SitesApiService(),));
+  runApp(App(
+    apiService: ApiService(),
+    articlesApiService: ArticlesApiService(),
+    sitesApiService: SitesApiService(),
+  ));
 }
 
 class App extends StatelessWidget {
-  const App({super.key, required this.apiService, required this.articlesApiService, required this.sitesApiService});
+  const App(
+      {super.key,
+      required this.apiService,
+      required this.articlesApiService,
+      required this.sitesApiService});
 
   final ApiService apiService;
   final ArticlesApiService articlesApiService;
   final SitesApiService sitesApiService;
-  
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => AuthRepository(apiService: apiService),
+        BlocProvider(
+          create: (context) => AuthCubit(
+            authRepository: getIt.get<AuthRepository>(),
+          ),
         ),
-        RepositoryProvider(
-          create: (context) => ArticlesRopsitory(articlesApiService: articlesApiService),
-        ),RepositoryProvider(
-          create: (context) => ProfileRepository(apiService: apiService),
+        BlocProvider(
+          create: (context) => NavbarCubit(),
         ),
-        RepositoryProvider(
-          create: (context) => SitesRopsitory( sitesApiService: sitesApiService),
+        BlocProvider(
+          create: (context) =>
+              ArticleCubit(articlesRepository: getIt.get<ArticlesRopsitory>()),
         ),
-        // RepositoryProvider(
-        //   create: (context) => UsersRepository(apiService: apiService),
-        // )
+        BlocProvider(
+          create: (context) =>
+              ProfileCubit(profileRepository: getIt.get<ProfileRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => UserDataCubit(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              WebsiteCubit(websiteRepository: getIt.get<SitesRopsitory>()),
+        )
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => AuthCubit(
-              authRepository: context.read<AuthRepository>(),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => NavbarCubit(),
-          ),
-          BlocProvider(
-            create: (context) => ArticleCubit(
-                articlesRopsitory: context.read<ArticlesRopsitory>()),
-          ),
-
-          BlocProvider(
-            create: (context) =>
-                ProfileCubit(profileRepository: context.read<ProfileRepository>()),
-          ),
-          
-          BlocProvider(
-            create: (context) => UserDataCubit(),
-          ),
-          BlocProvider(
-            create: (context) => WebsiteCubit(websiteRepository:context.read<SitesRopsitory>() ),
-          )
-        ],
-        child: const MyApp(),
-      ),
+      child: const MyApp(),
     );
   }
 }

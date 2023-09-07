@@ -1,22 +1,16 @@
 import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mad_mom_mag/cubitss/articles_cubit/articles_cubit.dart';
-import 'package:mad_mom_mag/cubitss/website_cubit/website_cubit.dart';
-import 'package:mad_mom_mag/data/models/articles_model/articles_model.dart';
 import 'package:mad_mom_mag/data/models/articles_model/filed_keys.dart';
-import 'package:mad_mom_mag/data/models/sites_model/filed_keys.dart';
 import 'package:mad_mom_mag/data/models/form_status/form_status.dart';
-
 import 'package:mad_mom_mag/presentation/websites/widgets/add_website_text_field.dart';
-import 'package:mad_mom_mag/utils/constants/constants.dart';
 
 class AddArticle extends StatefulWidget {
-  AddArticle({super.key, });
-
+  const AddArticle({
+    super.key,
+  });
 
   @override
   State<AddArticle> createState() => _AddArticleState();
@@ -26,6 +20,7 @@ class _AddArticleState extends State<AddArticle> {
   File? image;
   TextEditingController titleCont = TextEditingController();
   TextEditingController descriptionCont = TextEditingController();
+  TextEditingController hashtagCont = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,13 +41,6 @@ class _AddArticleState extends State<AddArticle> {
       ),
       body: Stack(
         children: [
-          Visibility(
-            visible: context.watch<ArticleCubit>().state.status ==
-                FormStatus.loading,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
           SingleChildScrollView(
             child: Column(
               children: [
@@ -77,15 +65,27 @@ class _AddArticleState extends State<AddArticle> {
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
                         WebsiteTextField(
-                          maxLines: 5,
+                            maxLines: 5,
                             controller: descriptionCont,
                             onChanged: (value) {
                               context.read<ArticleCubit>().updateArticleField(
                                   fieldKey: ArticleFieldKeys.description,
                                   value: value);
                             },
-                            label: "  Article Desc",
+                            label: "  Article Description",
                             type: TextInputType.phone),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        WebsiteTextField(
+                            controller: hashtagCont,
+                            onChanged: (value) {
+                              context.read<ArticleCubit>().updateArticleField(
+                                  fieldKey: ArticleFieldKeys.hashtag,
+                                  value: value);
+                            },
+                            label: "  Article Hashtag",
+                            type: TextInputType.text),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
                         ),
@@ -150,13 +150,24 @@ class _AddArticleState extends State<AddArticle> {
                             ),
                             onPressed: () async {
                               if (context.read<ArticleCubit>().canRegister()) {
-                                context.read<ArticleCubit>().createArticle();
-                                context.read<ArticleCubit>().getArticles();
-                                Navigator.pop(context);
+                                await context
+                                    .read<ArticleCubit>()
+                                    .createArticle();
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        "Article qo'shish haqidagi so'rovingiz Adminga yuborildi",
+                                      ),
+                                    ),
+                                  );
+                                  context.read<ArticleCubit>().getArticles();
+                                  Navigator.pop(context);
+                                }
                               }
                             },
                             child: const Center(
-                              child: Text('Add Website'),
+                              child: Text('Add Article'),
                             ),
                           ),
                         ),
@@ -168,6 +179,13 @@ class _AddArticleState extends State<AddArticle> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Visibility(
+            visible: context.watch<ArticleCubit>().state.status ==
+                FormStatus.loading,
+            child: const Center(
+              child: CircularProgressIndicator(),
             ),
           ),
         ],
@@ -225,8 +243,10 @@ class _AddArticleState extends State<AddArticle> {
 
     if (xFile != null) {
       image = File(xFile.path);
-      context.read<ArticleCubit>().updateArticleField(
-          fieldKey: ArticleFieldKeys.image, value: xFile.path);
+      if (context.mounted) {
+        context.read<ArticleCubit>().updateArticleField(
+            fieldKey: ArticleFieldKeys.image, value: xFile.path);
+      }
     }
   }
 

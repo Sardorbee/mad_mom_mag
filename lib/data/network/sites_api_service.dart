@@ -1,13 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mad_mom_mag/data/local/shared_prefs.dart';
-import 'package:mad_mom_mag/data/models/api_user_model.dart';
-import 'package:mad_mom_mag/data/models/articles_model/articles_model.dart';
 import 'package:mad_mom_mag/data/models/sites_model/sites_model.dart';
-
 import 'package:mad_mom_mag/data/models/universal_data.dart';
-import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/utils/constants/constants.dart';
 
 class SitesApiService {

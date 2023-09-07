@@ -1,19 +1,24 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mad_mom_mag/data/local/shared_prefs.dart';
-import 'package:mad_mom_mag/data/models/api_user_model.dart';
-import 'package:mad_mom_mag/data/models/articles_model/articles_model.dart';
-import 'package:mad_mom_mag/data/models/sites_model/sites_model.dart';
-
 import 'package:mad_mom_mag/data/models/universal_data.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/utils/constants/constants.dart';
 
 class ApiService {
   // DIO SETTINGS
-
-  final _dio = Dio(
+  final _dioSecure = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      connectTimeout: Duration(seconds: TimeOutConstants.connectTimeout),
+      receiveTimeout: Duration(seconds: TimeOutConstants.receiveTimeout),
+      sendTimeout: Duration(seconds: TimeOutConstants.sendTimeout),
+    ),
+  );
+  final _dioOpen = Dio(
     BaseOptions(
       baseUrl: baseUrl,
       headers: {
@@ -30,7 +35,7 @@ class ApiService {
   }
 
   _init() {
-    _dio.interceptors.add(
+    _dioSecure.interceptors.add(
       InterceptorsWrapper(
         onError: (error, handler) async {
           //error.response.statusCode
@@ -41,12 +46,29 @@ class ApiService {
           debugPrint("SO'ROV  YUBORILDI :${requestOptions.path}");
           requestOptions.headers
               .addAll({"token": StorageRepository.getString("token")});
+          return handler.next(requestOptions);
+        },
+        onResponse: (response, handler) async {
+          debugPrint("JAVOB  KELDI :${response.requestOptions.path}");
+          return handler.next(response);
+        },
+      ),
+    );
+    _dioOpen.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) async {
+          //error.response.statusCode
+          debugPrint("ENTERED ERROR!! :${error.message} and ${error.response}");
+          return handler.next(error);
+        },
+        onRequest: (requestOptions, handler) async {
+          debugPrint("SENT REQUEST :${requestOptions.path}");
 
           // return handler.resolve(Response(requestOptions: requestOptions, data: {"name": "ali", "age": 26}));
           return handler.next(requestOptions);
         },
         onResponse: (response, handler) async {
-          debugPrint("JAVOB  KELDI :${response.requestOptions.path}");
+          debugPrint("RESPONSE RECEIVED :${response.requestOptions.path}");
           return handler.next(response);
         },
       ),
@@ -61,7 +83,7 @@ class ApiService {
   }) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/gmail',
         data: {
           "gmail": gmail,
@@ -87,7 +109,7 @@ class ApiService {
   Future<UniversalData> confirmCode({required String code}) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/password',
         data: {"checkPass": code},
       );
@@ -112,11 +134,11 @@ class ApiService {
   }) async {
     Response response;
 
-    _dio.options.headers = {
+    _dioOpen.options.headers = {
       "Accept": "multipart/form-data",
     };
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/register',
         data: await userModel.getFormData(),
       );
@@ -143,7 +165,7 @@ class ApiService {
   }) async {
     Response response;
     try {
-      response = await _dio.post(
+      response = await _dioOpen.post(
         '/login',
         data: {
           "gmail": gmail,
@@ -170,7 +192,7 @@ class ApiService {
   Future<UniversalData> getProfileData() async {
     Response response;
     try {
-      response = await _dio.get('/users');
+      response = await _dioSecure.get('/users');
 
       if ((response.statusCode! >= 200) && (response.statusCode! < 300)) {
         return UniversalData(data: UserModel.fromJson(response.data["data"]));

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mad_mom_mag/cubitss/auth_cubit/auth_cubit.dart';
+import 'package:mad_mom_mag/cubitss/tab_bar_cubit/tabbar_cubit.dart';
 import 'package:mad_mom_mag/cubitss/users_cubit/users_cubit.dart';
 import 'package:mad_mom_mag/data/models/user_model/user_model.dart';
 import 'package:mad_mom_mag/presentation/app_routes.dart';
@@ -105,16 +106,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: MediaQuery.of(context).size.height * 0.015,
                   ),
                   CustomCardProfile(
-                    leadingText: 'MAGAZINES',
-                    onTap: () {},
+                    leadingText: 'Articles',
+                    onTap: () {context
+                        .read<NavbarCubit>()
+                        .updateScreen(2);},
                     widget: const Icon(Icons.arrow_forward_ios_outlined),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.015,
                   ),
                   CustomCardProfile(
-                    leadingText: 'Change Password',
-                    onTap: () {},
+                    leadingText: 'Websites',
+                    onTap: () {context
+                        .read<NavbarCubit>()
+                        .updateScreen(1);},
                     widget: const Icon(Icons.arrow_forward_ios_outlined),
                   ),
                   SizedBox(

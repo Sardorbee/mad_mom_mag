@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mad_mom_mag/data/models/user_model/field_keys.dart';
@@ -66,7 +66,7 @@ class UserDataCubit extends Cubit<UserDataState> {
 
   bool canRegister() {
     UserModel user = state.userModel;
-// ! Errorlarni chiqarish kerak
+// ! Must Display Errors
     return user.contact.length >= 9 &&
         user.username.isNotEmpty &&
         user.avatar.isNotEmpty &&
